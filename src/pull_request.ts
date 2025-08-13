@@ -23,10 +23,12 @@ export class PullRequest {
     }
 
     if (reviewers.length > 0) {
+      core.debug(`Adding reviewers: ${reviewers.join(', ')}`)
       requestData.reviewers = reviewers
     }
 
     if (teamReviewers.length > 0) {
+      core.debug(`Adding team reviewers: ${teamReviewers.join(', ')}`)
       requestData.team_reviewers = teamReviewers
     }
 

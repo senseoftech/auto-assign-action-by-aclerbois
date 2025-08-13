@@ -19,6 +19,8 @@ export async function run() {
       ref: sha,
     })
 
+    core.debug(`Fetched configuration: ${JSON.stringify(config)}`)
+
     await handler.handlePullRequest(client, github.context, config)
   } catch (error) {
     if (error instanceof Error) {

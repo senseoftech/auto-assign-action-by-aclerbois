@@ -2,6 +2,7 @@ import _ from 'lodash'
 import * as yaml from 'js-yaml'
 import { Config } from './handler'
 import { Client } from './types'
+import core from '@actions/core'
 
 export function chooseReviewers(owner: string, config: Config): string[] {
   const { useReviewGroups, reviewGroups, numberOfReviewers, reviewers } = config
@@ -95,10 +96,12 @@ export function chooseAssignees(owner: string, config: Config): string[] {
 }
 
 export function chooseUsers(
-  candidates: string[],
+  candidates: string[] = [],
   desiredNumber: number,
   filterUser: string = ''
 ): string[] {
+  core.debug(`Choosing users from candidates: ${candidates.join(', ')}`)
+
   // Handle undefined or null candidates
   if (!candidates || !Array.isArray(candidates)) {
     return []

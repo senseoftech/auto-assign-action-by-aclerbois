@@ -1128,6 +1128,57 @@ describe('handlePullRequest', () => {
     expect(requestReviewersSpy.mock.calls[0][0]?.team_reviewers).toHaveLength(2)
   })
 
+  test('adds only team reviewers when no individual reviewers are configured', async () => {
+    // MOCKS
+    ;(github.getOctokit as jest.Mock).mockImplementation(() => ({
+      rest: {
+        pulls: {
+          requestReviewers: async () => {},
+        },
+        issues: {
+          addAssignees: async () => {},
+        },
+      },
+    }))
+
+    const client = github.getOctokit('token')
+
+    const requestReviewersSpy = jest.spyOn(
+      client.rest.pulls,
+      'requestReviewers'
+    )
+
+    // GIVEN
+    const config = {
+      addReviewers: true,
+      addAssignees: false,
+      numberOfReviewers: 0,
+      numberOfTeamReviewers: 2,
+      numberOfAssignees: 0,
+      reviewers: [], // No individual reviewers
+      teamReviewers: ['team1', 'team2', 'team3'],
+      assignees: [],
+      skipKeywords: [],
+      useReviewGroups: false,
+      useAssigneeGroups: false,
+      useTeamReviewGroups: false,
+      reviewGroups: {},
+      teamReviewGroups: {},
+      assigneeGroups: {},
+    }
+
+    // WHEN
+    await handler.handlePullRequest(client, context, config)
+
+    // THEN
+    expect(requestReviewersSpy).toHaveBeenCalled()
+    expect(requestReviewersSpy.mock.calls[0][0]?.reviewers).toBeUndefined()
+    expect(requestReviewersSpy.mock.calls[0][0]?.team_reviewers).toHaveLength(2)
+    expect(requestReviewersSpy.mock.calls[0][0]?.team_reviewers).toEqual(
+      expect.arrayContaining(['team1', 'team2', 'team3'].slice(0, 2))
+    )
+  })
+
   test('throws error when useTeamReviewGroups is true but teamReviewGroups is not set', async () => {
     // MOCKS
     ;(github.getOctokit as jest.Mock).mockImplementation(() => ({

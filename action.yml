@@ -1,6 +1,6 @@
-name: 'Auto Assign Action'
-description: 'Add reviewers to pull requests when pull requests are opened.'
-author: 'Kentaro Matsushita'
+name: 'Auto Assign Action (Fork from kentaro-m)'
+description: 'Add reviewers to pull requests when pull requests are opened. (fork with team_reviewers supported)'
+author: 'Adrien Clerbois'
 inputs:
   repo-token:
     description: 'A token for the repo'
